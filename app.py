@@ -588,7 +588,7 @@ assistant = AfroZoomerAssistant()
 
 @app.route('/')
 def index():
-    return render_template('zoomer_ai.html')
+    return render_template('app.html')
 
 @app.route('/ask', methods=['POST'])
 def ask():
