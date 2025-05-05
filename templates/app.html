@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoomer Africa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #357AFF;
+        }
+
+        .nav-links a {
+            color: #4a5568;
+            margin-left: 20px;
+            text-decoration: none;
+        }
+
+        .nav-links a:hover {
+            color: #357AFF;
+        }
+
+        .main-content {
+            padding-top: 80px; /* Adjust based on nav height */
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .platform-guide, .ask-afrozoomer {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-guide h1 {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1a202c;
+        }
+
+        .section {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            cursor: pointer;
+        }
+
+        .section-header .icon {
+            margin-right: 10px;
+            color: #357AFF;
+        }
+
+        .section-header .title {
+            font-weight: medium;
+            color: #1a202c;
+        }
+
+        .section-header .arrow {
+            color: #718096;
+        }
+
+        .section-content {
+            padding: 15px;
+            background-color: #f7fafc;
+            display: none; /* Initially hidden */
+        }
+
+        .section-content p {
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .screenshots-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .screenshot-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .screenshot-item h3 {
+            font-size: 1rem;
+            font-weight: medium;
+            margin-bottom: 5px;
+            color: #1a202c;
+        }
+
+        .screenshot-item p {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-bottom: 10px;
+        }
+
+        .screenshot-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .screenshot-item ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .ask-afrozoomer h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #1a202c;
+            display: flex;
+            align-items: center;
+        }
+
+        /* .ask-afrozoomer {
+            width: 100%;
+            max-width: 700px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        } */
+
+        .ask-afrozoomer h2 img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-message {
+            position: relative;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            max-width: 70%;
+            font-size: 0.95em;
+            line-height: 1.5;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            word-break: break-word;
+            clear: both;
+            display: inline-block;
+        }
+
+        .user-message {
+            background-color: #357AFF;
+            color: white;
+            float: right;
+            border-bottom-right-radius: 4px;
+        }
+
+        .assistant-message {
+            background-color: #f1f1f1;
+            color: #333;
+            float: left;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-area {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            background-color: #ffffff;
+        }
+
+        /* Chat bubble tails */
+        .chat-message::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .user-message::after {
+            border-width: 8px 0 8px 10px;
+            border-color: transparent transparent transparent #357AFF;
+            right: -10px;
+            top: 10px;
+        }
+
+        .assistant-message::after {
+            border-width: 8px 10px 8px 0;
+            border-color: transparent #f1f1f1 transparent transparent;
+            left: -10px;
+            top: 10px;
+        }
+
+
+        .chat-input-area {
+            display: flex;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px 0 0 6px;
+            outline: none;
+        }
+
+        .send-button {
+            background-color: #357AFF;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+        }
+
+        .send-button:hover {
+            background-color: #2e69de;
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin: 10px 0 10px 10px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #aaa;
+            border-radius: 50%;
+            animation: blink 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes blink {
+            0%, 80%, 100% {
+                opacity: 0;
+            }
+            40% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-title">ZOOMER AI</div>
+            <div class="nav-links">
+                <a href="/feed"><i class="fas fa-home fa-lg"></i></a>
+                <a href="/profile"><i class="fas fa-user fa-lg"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <div class="platform-guide">
+            <h1>Welcome to Zoomer Africa</h1>
+            <div class="platform-guide-sections">
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <div class="flex-title">
+                            <i class="fas fa-info-circle icon"></i>
+                            <span class="title">About Zoomer Africa</span>
+                        </div>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="section-content">
+                        <p>Zoomer Africa is a social media platform developed by Transparent Hub Uganda Limited (THUL). As the leading platform for authentic African storytelling and community engagement, our mission is to amplify African voices and create meaningful connections across the continent.</p>
+                        <div class="screenshots-grid">
+                            <div class="screenshot-item">
+                                <h3>Our Platform</h3>
+                                <p>Connecting African voices</p>
+                                <img src="https://ucarecdn.com/27beb8d8-7f09-47ae-a28d-22a0a5bc826e/-/format/auto/" alt="Our Platform Screenshot">
+                                <ul>
+                                    <li>Developed by Transparent Hub Uganda Limited (THUL)</li>
+                                    <li>Focus on authentic African storytelling</li>
+                                    <li>Digital inclusion and empowerment</li>
+                                    <li>Cross-cultural understanding</li>
+                                    <li>Professional networking platform</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <div class="flex-title">
+                            <i class="fas fa-th-large icon"></i>
+                            <span class="title">Content & Categories</span>
+                        </div>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="section-content">
+                        <p>Share diverse content across multiple categories including Technology, Culture, Business, Education, Entertainment, Sports, Politics, and Health. Our platform provides comprehensive tools for creating and sharing African stories.</p>
+                        <div class="screenshots-grid">
+                            <div class="screenshot-item">
+                                <h3>Content Creation</h3>
+                                <p>Express your African story</p>
+                                <img src="https://ucarecdn.com/27beb8d8-7f09-47ae-a28d-22a0a5bc826e/-/format/auto/" alt="Content Creation Screenshot">
+                                <ul>
+                                    <li>Rich text editor for storytelling</li>
+                                    <li>Image and media sharing</li>
+                                    <li>Story highlights feature</li>
+                                    <li>Content scheduling tools</li>
+                                    <li>Analytics dashboard</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <div class="flex-title">
+                            <i class="fas fa-stream icon"></i>
+                            <span class="title">Social Features</span>
+                        </div>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="section-content">
+                        <p>Connect and engage with content creators, journalists, and community members from across Africa. Share updates, track engagement, and participate in meaningful discussions.</p>
+                        <div class="screenshots-grid">
+                            <div class="screenshot-item">
+                                <h3>Engagement Tools</h3>
+                                <p>Connect with the community</p>
+                                <img src="https://ucarecdn.com/27beb8d8-7f09-47ae-a28d-22a0a5bc826e/-/format/auto/" alt="Engagement Tools Screenshot">
+                                <ul>
+                                    <li>Real-time content sharing</li>
+                                    <li>Comments and reactions</li>
+                                    <li>Trending topics</li>
+                                    <li>Professional networking</li>
+                                    <li>Topic-focused discussions</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header" onclick="toggleSection(this)">
+                        <div class="flex-title">
+                            <i class="fas fa-shield-alt icon"></i>
+                            <span class="title">Community Guidelines</span>
+                        </div>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="section-content">
+                        <p>Our platform promotes respectful dialogue, authentic African stories, and meaningful connections. We maintain high standards for content quality while ensuring user safety and cultural sensitivity.</p>
+                        <div class="screenshots-grid">
+                            <div class="screenshot-item">
+                                <h3>Platform Values</h3>
+                                <p>Building a positive community</p>
+                                <ul>
+                                    <li>Authenticity in storytelling</li>
+                                    <li>Cultural sensitivity and respect</li>
+                                    <li>User safety and privacy</li>
+                                    <li>Press freedom</li>
+                                    <li>Digital empowerment</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ask-afrozoomer">
+            <h2 style="font-size: 1.5rem; font-weight: bold; color: #357AFF; display: flex; align-items: center;">
+                <!-- <img src="afro-zoomer-avater.jpeg" alt=""> -->
+                Ask AfroZoomer
+            </h2>
+            <div class="chat-area" id="chatArea">
+                </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="queryInput" placeholder="Ask about Zoomer Africa...">
+                <button id="afrozoomer-input" class="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(header) {
+            const section = header.parentNode;
+            const content = section.querySelector('.section-content');
+            const arrow = header.querySelector('.arrow');
+
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+            arrow.classList.toggle('fa-chevron-down');
+            arrow.classList.toggle('fa-chevron-up');
+        }
+
+        // AfroZoomer AI Assistant Script       
+        document.addEventListener('DOMContentLoaded', function() {
+                const chatContainer = document.getElementById('chatArea');
+                const inputField = document.getElementById('queryInput');
+                const askButton = document.getElementById('afrozoomer-input');
+
+                // Display initial message
+                addMessage("👋🏾 Hello there! I'm AfroZoomer — your chatty, friendly AI buddy here to guide you through Zoomer Africa. What can I help with today? 🚀", 'assistant');
+
+                // Handle Ask button
+                askButton.addEventListener('click', askQuestion);
+
+                // Handle Enter key
+                inputField.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        askQuestion();
+                    }
+                });
+
+                function askQuestion() {
+                    const userInput = inputField.value.trim();
+
+                    if (userInput) {
+                        addMessage(userInput, 'user');
+                        inputField.value = '';
+
+                        // Show "typing..." message
+                        const typingMessage = addMessage("AfroZoomer is typing...", 'assistant', true);
+
+                        fetch('/ask', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `user_input=${encodeURIComponent(userInput)}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Simulate delay before showing actual response
+                            setTimeout(() => {
+                                // Remove "typing..." placeholder
+                                typingMessage.remove();
+                                addMessage(data.response, 'assistant');
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            }, 1200); // Delay in milliseconds
+                        })
+                        .catch(error => {
+                            typingMessage.remove();
+                            console.error('Error:', error);
+                            addMessage("Oops! 😬 Something went wrong. Try again shortly, okay?", 'assistant');
+                        });
+                    }
+                }
+
+                function addMessage(text, sender, isTemporary = false) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('chat-message');
+                    messageDiv.classList.add(sender === 'user' ? 'user-message' : 'assistant-message');
+
+                    const icon = document.createElement('i');
+                    icon.className = sender === 'user' ? 'fas fa-user-circle' : 'fas fa-robot';
+                    icon.style.marginRight = '10px';
+                    icon.style.fontSize = '1.2em';
+
+                    //const messageContent = document.createElement('span');
+                    //messageContent.textContent = text;
+                    messageDiv.textContent = text;
+                    chatContainer.appendChild(messageDiv);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                    return messageDiv;
+                }
+            });
+
+            // const eventSource = new EventSource('/stream'); // Connect to the stream endpoint
+
+            // eventSource.onmessage = function(event) {
+            //     // event.data contains each word from the server
+            //     const word = event.data;
+            //     document.getElementById('response').innerText += word + ' ';
+            // };
+
+
+            function setQuestion(question) {
+                document.getElementById('afrozoomer-input').value = question;
+            }
+    </script>
+</body>
+</html>

@@ -1,2 +1,2 @@
-start: gunicorn zoomer_ai:app
+start: gunicorn app:app
 
